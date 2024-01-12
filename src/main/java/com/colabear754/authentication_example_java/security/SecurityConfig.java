@@ -22,7 +22,7 @@ public class SecurityConfig {
 
     // note 허용할 URL 목록을 배열로 분리
     private final String[] allowedURL = {
-            "/" ,
+            "/",
             "/swagger-ui/**",
             "/v3/**",
             "/sign-up",
@@ -30,22 +30,6 @@ public class SecurityConfig {
     };
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
-//    @Autowired
-//    private IUserDetailsService userDetails;
-//    @Bean
-//    public DaoAuthenticationProvider authenticationProvider(){
-//        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-//        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-//        daoAuthenticationProvider.setUserDetailsService(userDetails);
-//        return daoAuthenticationProvider;
-//    }
-//
-//    // authentication manager
-//    @Bean
-//    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-//        return configuration.getAuthenticationManager();
-//    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
@@ -60,14 +44,14 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // note Session은 사용하지 않으므로 STATELESS 사용
                 )
-                .addFilterBefore(jwtAuthenticationFilter , BasicAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter.class)
                 // note JWT Filter 적용
 //                .authenticationProvider(authenticationProvider())
                 .build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
