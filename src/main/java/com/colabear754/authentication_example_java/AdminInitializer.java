@@ -17,12 +17,13 @@ public class AdminInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        memberRepository.save(Member.builder()
-                .account("admin")
-                .password("admin")
-                .name("관리자")
-                .type(MemberType.ADMIN)
-                .createdAt(LocalDateTime.now())
-                .build());
+        // note 실행 시 자동 관리자 생성
+//        memberRepository.save(Member.builder()
+//                .account("admin")
+//                .password("admin")
+//                .name("관리자")
+//                .type(MemberType.ADMIN)
+//                .createdAt(LocalDateTime.now())
+//                .build());
     }
 }

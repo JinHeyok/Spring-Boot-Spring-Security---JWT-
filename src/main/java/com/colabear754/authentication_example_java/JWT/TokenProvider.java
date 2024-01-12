@@ -1,4 +1,4 @@
-package com.colabear754.authentication_example_java.security;
+package com.colabear754.authentication_example_java.JWT;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

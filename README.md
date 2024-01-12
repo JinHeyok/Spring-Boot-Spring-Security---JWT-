@@ -19,3 +19,8 @@
 
 ### 추가 구성
 - UserDetails, UserDetailsService Custome 추가 
+- yml -> xml 설정 파일 변경
+- JPA 설정 변경 ddl-auto Create -> Update
+- Spring Security CORS Config
+- S3 Configuration , S3Upload Class Update
+- JWT , S3 패키지 분리

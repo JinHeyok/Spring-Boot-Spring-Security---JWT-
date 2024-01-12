@@ -6,9 +6,8 @@ import com.colabear754.authentication_example_java.dto.sign_up.request.SignUpReq
 import com.colabear754.authentication_example_java.dto.sign_up.response.SignUpResponse;
 import com.colabear754.authentication_example_java.entity.Member;
 import com.colabear754.authentication_example_java.repository.MemberRepository;
-import com.colabear754.authentication_example_java.security.TokenProvider;
+import com.colabear754.authentication_example_java.JWT.TokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
