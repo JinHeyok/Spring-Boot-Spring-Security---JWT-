@@ -24,3 +24,4 @@
 - Spring Security CORS Config
 - S3 Configuration , S3Upload Class Update
 - JWT , S3 패키지 분리
+- JWT.yml -> application.properties 설정 정보 수정

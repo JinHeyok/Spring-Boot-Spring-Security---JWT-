@@ -3,9 +3,7 @@ package com.colabear754.authentication_example_java.JWT;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.sql.Date;
@@ -14,23 +12,28 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-@PropertySource("classpath:jwt.yml")
-@Service
+//@PropertySource("classpath:jwt.yml")
+@Component
 public class TokenProvider {
-    private final String secretKey;
-    private final long expirationHours;
-    private final String issuer;
 
 
-    public TokenProvider(
-            @Value("${secret-key}") String secretKey,
-            @Value("${expiration-hours}") long expirationHours,
-            @Value("${issuer}") String issuer
-    ) {
-        this.secretKey = secretKey;
-        this.expirationHours = expirationHours;
-        this.issuer = issuer;
-    }
+    @Value("${secret-key}")
+    private  String secretKey;
+    @Value("${expiration-hours}")
+    private  long expirationHours;
+    @Value("${issuer}")
+    private  String issuer;
+
+
+//    public TokenProvider(
+//            @Value("${secret-key}") String secretKey,
+//            @Value("${expiration-hours}") long expirationHours,
+//            @Value("${issuer}") String issuer
+//    ) {
+//        this.secretKey = secretKey;
+//        this.expirationHours = expirationHours;
+//        this.issuer = issuer;
+//    }
 
     public String createToken(String userSpecification) {
         return Jwts.builder()
