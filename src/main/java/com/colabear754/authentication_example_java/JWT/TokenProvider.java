@@ -24,17 +24,6 @@ public class TokenProvider {
     @Value("${issuer}")
     private  String issuer;
 
-
-//    public TokenProvider(
-//            @Value("${secret-key}") String secretKey,
-//            @Value("${expiration-hours}") long expirationHours,
-//            @Value("${issuer}") String issuer
-//    ) {
-//        this.secretKey = secretKey;
-//        this.expirationHours = expirationHours;
-//        this.issuer = issuer;
-//    }
-
     public String createToken(String userSpecification) {
         return Jwts.builder()
                 .signWith(new SecretKeySpec(secretKey.getBytes(), SignatureAlgorithm.HS512.getJcaName())) // note HS512 알고리즘을 사용하여  SecretKey를 이용해 서명

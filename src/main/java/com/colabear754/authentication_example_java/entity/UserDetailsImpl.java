@@ -22,7 +22,7 @@ public class UserDetailsImpl implements UserDetails {
 
     }
 
-    public static User build(Member user) {
+    public static User build(MemberEntity user) {
         Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority(user.getType().toString()));
         return new User(

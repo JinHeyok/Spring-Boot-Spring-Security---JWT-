@@ -13,7 +13,7 @@
 - Spring Security
 - Springdoc 2.1.0
 - Spring Data JPA
-- H2 DB
+- My SQL
 - Gradle 7.6.1
 - Lombok
 
@@ -25,3 +25,13 @@
 - S3 Configuration , S3Upload Class Update
 - JWT , S3 패키지 분리
 - JWT.yml -> application.properties 설정 정보 수정
+- AbstractDTO 추상화 클래스 추가로 유연한 Response 응답 추가
+- MessageDTO , ErrorMessageDTO , StateDTO 유연한 응답 추가
+- 기존에 있던 Update 오류 수정 
+- Entity 생성 시 레코드 생성일, 업데이트 컬럼 자동 생성
+- Entity 레코드 수정 시 수정날짜 자동 업데이트
+- 응답 시 생성 날짜 , 수정 날짜 자동 응답 추가
+- 전체 권한 Annotation 추가
+- EntityMapperConvertDTO 추가 , 각 Entity 별로 데이터 가공 가능 
+- 기존에 불필요한 코드 제거
+- Record -> Class 로 변환 (사용이 편하기 위해서)

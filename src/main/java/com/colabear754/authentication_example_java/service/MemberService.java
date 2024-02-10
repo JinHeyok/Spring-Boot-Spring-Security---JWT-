@@ -1,16 +1,20 @@
 package com.colabear754.authentication_example_java.service;
 
-import com.colabear754.authentication_example_java.dto.member.request.MemberUpdateRequest;
-import com.colabear754.authentication_example_java.dto.member.response.MemberDeleteResponse;
-import com.colabear754.authentication_example_java.dto.member.response.MemberInfoResponse;
-import com.colabear754.authentication_example_java.dto.member.response.MemberUpdateResponse;
+import com.colabear754.authentication_example_java.DTO.AbstractDTO;
+import com.colabear754.authentication_example_java.DTO.StateDTO;
+import com.colabear754.authentication_example_java.DTO.member.request.MemberUpdateRequest;
+import com.colabear754.authentication_example_java.entity.MemberEntity;
+import com.colabear754.authentication_example_java.mapper.MemberMapper;
 import com.colabear754.authentication_example_java.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -19,27 +23,29 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private MemberMapper memberMapper;
+
     @Transactional(readOnly = true)
-    public MemberInfoResponse getMemberInfo(String account) {
-        return memberRepository.findByAccount(account)
-                .map(MemberInfoResponse::from)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+    public AbstractDTO getMemberInfo(String account) {
+        Optional<MemberEntity> member = memberRepository.findByAccount(account);
+        AbstractDTO response = memberMapper.fromEntity(member.get());
+        return response;
     }
 
     @Transactional
-    public MemberDeleteResponse deleteMember(UUID id) {
-        if (!memberRepository.existsById(id)) return new MemberDeleteResponse(false);
+    public AbstractDTO deleteMember(UUID id) {
         memberRepository.deleteById(id);
-        return new MemberDeleteResponse(true);
+        return new StateDTO(true);
     }
 
     @Transactional
-    public MemberUpdateResponse updateMember(UUID id, MemberUpdateRequest request) {
-        return memberRepository.findById(id)
-                .filter(member -> member.getPassword().equals(request.password()))
+    public AbstractDTO updateMember(User user, MemberUpdateRequest request) {
+        return memberRepository.findByAccount(user.getUsername())
+                .filter(member -> passwordEncoder.matches(request.getPassword() , member.getPassword()))
                 .map(member -> {
                     member.update(request , passwordEncoder); // note 새 비밀번호를 암호화 -> 파라미터를 추가해준다.
-                    return MemberUpdateResponse.of(true, member);
+                    return memberMapper.fromEntity(member);
                 })
                 .orElseThrow(() -> new NoSuchElementException("아이디 또는 비밀번호가 일치하지 않습니다."));
     }
