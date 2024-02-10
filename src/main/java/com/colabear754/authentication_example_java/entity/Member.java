@@ -1,8 +1,8 @@
 package com.colabear754.authentication_example_java.entity;
 
+import com.colabear754.authentication_example_java.DTO.sign_up.request.SignUpRequest;
 import com.colabear754.authentication_example_java.common.MemberType;
-import com.colabear754.authentication_example_java.dto.member.request.MemberUpdateRequest;
-import com.colabear754.authentication_example_java.dto.sign_up.request.SignUpRequest;
+import com.colabear754.authentication_example_java.DTO.member.request.MemberUpdateRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @Builder
 @Getter
 @Entity
-public class Member {
+public class Member extends Base{
     @Column(nullable = false, unique = true)
     private String account;
     @Column(nullable = false)
@@ -24,25 +24,23 @@ public class Member {
     private Integer age;
     @Enumerated(EnumType.STRING)
     private MemberType type;
-    private LocalDateTime createdAt;
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    public void update(MemberUpdateRequest newMember, PasswordEncoder encoder) {
+        this.password = encoder.encode(newMember.getNewPassword());
+        this.name = newMember.getName();
+        this.age = newMember.getAge();
+    }
 
     public static Member from(SignUpRequest request , PasswordEncoder encoder) {
         return Member.builder()
-                .account(request.account())
-                .password(encoder.encode(request.password()))
-                .name(request.name())
-                .age(request.age())
+                .account(request.getAccount())
+                .password(encoder.encode(request.getPassword()))
+                .name(request.getName())
+                .age(request.getAge())
                 .type(MemberType.USER)
-                .createdAt(LocalDateTime.now())
                 .build();
-    }
-
-    public void update(MemberUpdateRequest newMember , PasswordEncoder encoder) {
-        this.password = newMember.newPassword() == null || newMember.newPassword().isBlank() ? this.password : encoder.encode(newMember.password());
-        this.name = newMember.name();
-        this.age = newMember.age();
     }
 }
