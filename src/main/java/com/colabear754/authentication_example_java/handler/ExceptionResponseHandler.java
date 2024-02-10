@@ -1,6 +1,6 @@
 package com.colabear754.authentication_example_java.handler;
 
-import com.colabear754.authentication_example_java.dto.ApiResponse;
+import com.colabear754.authentication_example_java.DTO.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;

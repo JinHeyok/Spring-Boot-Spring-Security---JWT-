@@ -1,7 +1,7 @@
 package com.colabear754.authentication_example_java.controller;
 
-import com.colabear754.authentication_example_java.dto.ApiResponse;
-import com.colabear754.authentication_example_java.dto.member.request.MemberUpdateRequest;
+import com.colabear754.authentication_example_java.DTO.ApiResponse;
+import com.colabear754.authentication_example_java.DTO.member.request.MemberUpdateRequest;
 import com.colabear754.authentication_example_java.security.UserAuthorize;
 import com.colabear754.authentication_example_java.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +36,6 @@ public class MemberController {
     @Operation(summary = "회원 정보 수정")
     @PutMapping
     public ApiResponse updateMember(@AuthenticationPrincipal User user, @RequestBody MemberUpdateRequest request) {
-        return ApiResponse.success(memberService.updateMember(UUID.fromString(user.getUsername()), request));
+        return ApiResponse.success(memberService.updateMember(user, request));
     }
 }

@@ -1,4 +1,4 @@
-package com.colabear754.authentication_example_java.dto;
+package com.colabear754.authentication_example_java.DTO;
 
 import com.colabear754.authentication_example_java.common.ApiStatus;
 

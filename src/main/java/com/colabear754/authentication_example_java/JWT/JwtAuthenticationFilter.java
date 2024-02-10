@@ -55,12 +55,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String parseUserSpecification(String token) {
-//        String[] split = Optional.ofNullable(token)
-//                .filter(subject -> subject.length() >= 10)
-//                .map(tokenProvider::validateTokenAndGetSubject)
-//                .orElse("anonymous:anonymous")
-//                .split(":");
-//        return new User(split[0], "", List.of(new SimpleGrantedAuthority(split[1])));
         String userAccount = tokenProvider.validateTokenAndGetSubject(token);
         return userAccount;
     }
