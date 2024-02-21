@@ -29,7 +29,6 @@ public class ExcelService {
         if (file.isEmpty()) {
             throw new BadRequestException("파일이 존재하지 않습니다.");
         }
-
         // NOTE 파일의 확장자 검사 엑셀 파일만 가능
         String contentType = file.getContentType();
         if (!contentType.equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
@@ -51,6 +50,21 @@ public class ExcelService {
                 System.out.println(listMap.get(i).get(String.valueOf(j)));
             }
         }
+
+//        for (int i = 0; i < listMap.size(); i++) {
+//            Map<String, Object> dataMap = listMap.get(i);
+//            YourEntity entity = new YourEntity();
+//
+//            // 순서에 따라 엔티티 값 동적으로 설정
+//            for (int j = 0; j < dataMap.size(); j++) {
+//                String value = (String) dataMap.get(String.valueOf(j));
+//                setEntityValueBasedOnOrder(entity, j, value);
+//            }
+//
+//            // 엔티티 저장 또는 추가 처리
+//            yourEntityRepository.save(entity);
+//        }
+
         return true;
     }
 
@@ -131,7 +145,6 @@ public class ExcelService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return excelList;
     }
 
@@ -175,4 +188,19 @@ public class ExcelService {
 
         return map;
     }
+
+//    private void setEntityValueBasedOnOrder(YourEntity entity, int order, String value) {
+//        // 순서에 상관없이 자동으로 엔티티 값 설정 (첫 번째 필드 제외)
+//        Field[] fields = YourEntity.class.getDeclaredFields();
+//        if (order < fields.length && order > 0) {
+//            Field field = fields[order - 1]; // 첫 번째 필드를 제외하고 순서 조정
+//            field.setAccessible(true);
+//            try {
+//                field.set(entity, value);
+//            } catch (IllegalAccessException e) {
+//                // 예외 처리
+//            }
+//        }
+//    }
+
 }

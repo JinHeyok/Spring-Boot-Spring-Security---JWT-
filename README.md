@@ -37,3 +37,8 @@
 
 ### Branch dev-Excel
 - Excel File Data 가공 구성
+```java
+    // Excel Read
+    implementation 'org.apache.poi:poi:5.2.2'
+    implementation 'org.apache.poi:poi-ooxml:5.2.2'
+```
