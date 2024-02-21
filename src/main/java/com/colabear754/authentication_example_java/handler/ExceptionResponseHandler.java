@@ -25,4 +25,10 @@ public class ExceptionResponseHandler {
     public ResponseEntity<ApiResponse> handleException() {
         return ResponseEntity.internalServerError().body(ApiResponse.error("서버에 문제가 발생했습니다."));
     }
+
+    @ExceptionHandler({BadRequestException.class})
+    public ResponseEntity<ApiResponse> handlerBadRequestException(BadRequestException e) {
+        return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+    }
+
 }

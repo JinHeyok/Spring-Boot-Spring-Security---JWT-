@@ -26,11 +26,11 @@ public class SecurityConfig {
 
     // note 허용할 URL 목록을 배열로 분리
     private final String[] allowedURL = {
-            "/",
             "/api/docs/**",
             "/v3/**",
             "/sign-up",
-            "/sign-in"
+            "/sign-in",
+            "/excel/**"
     };
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
