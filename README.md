@@ -37,6 +37,7 @@
 
 ### Branch dev-Excel
 - Excel File Data 가공 구성
+- Excel GetValue 함수 리팩토링
 ```java
     // Excel Read
     implementation 'org.apache.poi:poi:5.2.2'
