@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +36,8 @@ public class ExcelService {
             throw new BadRequestException("파일 형식이 올바르지 않습니다.");
         }
 
-        Map<String, Object> nameMap = getFirstExcelData(file);
-        List<Map<String, Object>> listMap = getListExcelData(file);
+        Map<String, Object> nameMap = getFirstExcelData(file , 0);
+        List<Map<String, Object>> listMap = getListExcelData(file , 0);
 
         // NOTE 1행의 이름 데이터만 가져오기
         for (int i = 0; i < nameMap.size(); i++) {
@@ -71,6 +72,8 @@ public class ExcelService {
 
     // NOTE 각 셀의 데이터타입에 맞게 값 가져오기
     public String getCellValue(XSSFCell cell) {
+        DecimalFormat df = new DecimalFormat("#");
+        df.setMaximumFractionDigits(20);  // adjust this as per your requirement
 
         String value = "";
 
@@ -93,7 +96,13 @@ public class ExcelService {
                         value = String.format("%.2f%%", numericValue);
                     } else {
                         // NOTE 일반 숫자일 경우
-                        value = String.valueOf((int) cell.getNumericCellValue());
+                        double numericValue = cell.getNumericCellValue();
+                        String strValue = df.format(numericValue);
+                        if (strValue.contains(".")) {
+                            value = strValue;
+                        } else {
+                            value = String.valueOf((int) numericValue);
+                        }
                     }
                 }
             default:
@@ -103,7 +112,7 @@ public class ExcelService {
     }
 
     // NOTE 엑셀파일의 데이터 목록 가져오기 (파라미터들은 위에서 설명함)
-    public List<Map<String, Object>> getListExcelData(MultipartFile file) {
+    public List<Map<String, Object>> getListExcelData(MultipartFile file ,  int sheetNumber) {
 
         List<Map<String, Object>> excelList = new ArrayList<>();
 
@@ -114,7 +123,7 @@ public class ExcelService {
             XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
 
             // NOTE 첫번째 시트
-            XSSFSheet sheet = workbook.getSheetAt(0);
+            XSSFSheet sheet = workbook.getSheetAt(sheetNumber);
 
             int rowIndex = 0;
             int columnIndex = 0;
@@ -148,7 +157,7 @@ public class ExcelService {
         return excelList;
     }
 
-    public Map<String, Object> getFirstExcelData(MultipartFile file) {
+    public Map<String, Object> getFirstExcelData(MultipartFile file , int sheetNumber) {
 
         Map<String, Object> map = new HashMap<>();
 
@@ -158,7 +167,7 @@ public class ExcelService {
             XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
 
             // NOTE 첫번째 시트
-            XSSFSheet sheet = workbook.getSheetAt(0);
+            XSSFSheet sheet = workbook.getSheetAt(sheetNumber);
 
             // NOTE 첫번째 행(0)은 컬럼 명만 검색
             for (int rowIndex = 0; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
