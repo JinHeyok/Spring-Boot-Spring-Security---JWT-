@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 public class DateResponseDTO extends AbstractDTO{
 
     @JsonFormat(shape = JsonFormat.Shape.STRING , pattern = "yyyy-MM-dd HH:mm:ss")
-    protected LocalDateTime createAt;
+    protected LocalDateTime createdAt;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING , pattern = "yyyy-MM-dd HH:mm:ss")
-    protected LocalDateTime updateAt;
+    protected LocalDateTime updatedAt;
 }

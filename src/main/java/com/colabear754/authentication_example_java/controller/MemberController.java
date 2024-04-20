@@ -1,7 +1,6 @@
 package com.colabear754.authentication_example_java.controller;
 
-import com.colabear754.authentication_example_java.DTO.ApiResponse;
-import com.colabear754.authentication_example_java.DTO.member.request.MemberUpdateRequest;
+import com.colabear754.authentication_example_java.DTO.ApiResponseDTO;
 import com.colabear754.authentication_example_java.security.UserAuthorize;
 import com.colabear754.authentication_example_java.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,19 +22,9 @@ public class MemberController {
 
     @Operation(summary = "회원 정보 조회")
     @GetMapping
-    public ApiResponse getMemberInfo(@AuthenticationPrincipal User user) {
-        return ApiResponse.success(memberService.getMemberInfo(user.getUsername()));
+    public ApiResponseDTO getMemberInfo(@AuthenticationPrincipal User user) {
+        return ApiResponseDTO.success(memberService.getMemberInfo(user.getUsername()));
     }
 
-    @Operation(summary = "회원 탈퇴")
-    @DeleteMapping
-    public ApiResponse deleteMember(@AuthenticationPrincipal User user) {
-        return ApiResponse.success(memberService.deleteMember(UUID.fromString(user.getUsername())));
-    }
 
-    @Operation(summary = "회원 정보 수정")
-    @PutMapping
-    public ApiResponse updateMember(@AuthenticationPrincipal User user, @RequestBody MemberUpdateRequest request) {
-        return ApiResponse.success(memberService.updateMember(user, request));
-    }
 }

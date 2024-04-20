@@ -1,8 +1,8 @@
 package com.colabear754.authentication_example_java.controller;
 
-import com.colabear754.authentication_example_java.DTO.ApiResponse;
-import com.colabear754.authentication_example_java.DTO.sign_in.request.SignInRequest;
-import com.colabear754.authentication_example_java.DTO.sign_up.request.SignUpRequest;
+import com.colabear754.authentication_example_java.DTO.ApiResponseDTO;
+import com.colabear754.authentication_example_java.DTO.Request.SignInRequest;
+import com.colabear754.authentication_example_java.DTO.Request.SignUpRequest;
 import com.colabear754.authentication_example_java.service.SignService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,13 +21,13 @@ public class SignController {
 
     @Operation(summary = "회원 가입")
     @PostMapping("/sign-up")
-    public ApiResponse signUp(@RequestBody SignUpRequest request) {
-        return ApiResponse.success(signService.registerMember(request));
+    public ApiResponseDTO signUp(@RequestBody SignUpRequest request) {
+        return ApiResponseDTO.success(signService.registerMember(request));
     }
 
     @Operation(summary = "로그인")
     @PostMapping("/sign-in")
-    public ApiResponse signIn(@RequestBody SignInRequest request) {
-        return ApiResponse.success(signService.signIn(request));
+    public ApiResponseDTO signIn(@RequestBody SignInRequest request) {
+        return ApiResponseDTO.success(signService.signIn(request));
     }
 }

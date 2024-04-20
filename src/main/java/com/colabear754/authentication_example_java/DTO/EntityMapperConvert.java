@@ -9,4 +9,5 @@ public interface EntityMapperConvert {
 
     List<? extends AbstractDTO> fromEntities(List<? extends BaseEntity> entities);
 
+    BaseEntity convertRequestTOEntity(BaseRequestDTO requestDTO);
 }

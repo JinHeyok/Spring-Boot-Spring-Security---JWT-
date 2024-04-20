@@ -1,13 +1,12 @@
 package com.colabear754.authentication_example_java.controller;
 
 import com.colabear754.authentication_example_java.common.MemberType;
-import com.colabear754.authentication_example_java.DTO.ApiResponse;
+import com.colabear754.authentication_example_java.DTO.ApiResponseDTO;
 import com.colabear754.authentication_example_java.security.AllAuthorize;
 import com.colabear754.authentication_example_java.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,8 +22,8 @@ public class AdminController {
 
     @Operation(summary = "회원 목록 조회")
     @GetMapping("/members")
-    public ApiResponse getAllMembers(@RequestParam MemberType memberType) {
-        return ApiResponse.success(adminService.getMembers(memberType));
+    public ApiResponseDTO getAllMembers(@RequestParam MemberType memberType) {
+        return ApiResponseDTO.success(adminService.getMembers(memberType));
     }
 
 }

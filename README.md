@@ -35,3 +35,5 @@
 - EntityMapperConvertDTO 추가 , 각 Entity 별로 데이터 가공 가능 
 - 기존에 불필요한 코드 제거
 - Record -> Class 로 변환 (사용이 편하기 위해서)
+- 모든 Entity를 생성 할 때 공통적으로 사용하기위해 EntityMapperConvert에 convertRequestTOEntity메서드를 추가
+- 로그인 로직 , 회원가입 로직 기본 로직 변경

@@ -1,4 +1,4 @@
-package com.colabear754.authentication_example_java.DTO.sign_in.response;
+package com.colabear754.authentication_example_java.DTO.Response;
 
 import com.colabear754.authentication_example_java.common.MemberType;
 import com.colabear754.authentication_example_java.DTO.DateResponseDTO;
