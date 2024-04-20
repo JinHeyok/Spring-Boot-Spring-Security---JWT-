@@ -1,7 +1,6 @@
 package com.colabear754.authentication_example_java.DTO.Response;
 
 import com.colabear754.authentication_example_java.common.MemberType;
-import com.colabear754.authentication_example_java.DTO.DateResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

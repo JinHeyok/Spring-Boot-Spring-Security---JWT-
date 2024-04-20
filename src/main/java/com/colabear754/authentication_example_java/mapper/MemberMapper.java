@@ -1,6 +1,6 @@
 package com.colabear754.authentication_example_java.mapper;
 
-import com.colabear754.authentication_example_java.DTO.BaseRequestDTO;
+import com.colabear754.authentication_example_java.DTO.Request.BaseRequestDTO;
 import com.colabear754.authentication_example_java.DTO.EntityMapperConvert;
 import com.colabear754.authentication_example_java.DTO.member.response.MemberResponse;
 import com.colabear754.authentication_example_java.DTO.Request.SignUpRequest;

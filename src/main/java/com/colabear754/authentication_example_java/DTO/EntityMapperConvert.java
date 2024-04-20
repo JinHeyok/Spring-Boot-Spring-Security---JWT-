@@ -1,5 +1,6 @@
 package com.colabear754.authentication_example_java.DTO;
 
+import com.colabear754.authentication_example_java.DTO.Request.BaseRequestDTO;
 import com.colabear754.authentication_example_java.entity.BaseEntity;
 
 import java.util.List;

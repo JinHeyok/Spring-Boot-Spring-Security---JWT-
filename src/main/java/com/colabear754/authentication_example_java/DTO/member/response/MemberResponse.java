@@ -1,12 +1,10 @@
 package com.colabear754.authentication_example_java.DTO.member.response;
 
 import com.colabear754.authentication_example_java.common.MemberType;
-import com.colabear754.authentication_example_java.DTO.DateResponseDTO;
+import com.colabear754.authentication_example_java.DTO.Response.DateResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.UUID;
 
 @Getter
 @Setter
