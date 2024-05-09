@@ -38,6 +38,9 @@
 ### Branch dev-Excel
 - Excel File Data 가공 구성
 - Excel GetValue 함수 리팩토링
+- Excel File 동적 생성 , 다운로드 구성 
+    - Excel 의 첫행의 카테고리 이름은 별도 지정 및 DB의 Comment 값으로 지정 가능
+- Excel 관련 Util Class 구성
 ```java
     // Excel Read
 implementation 'org.apache.poi:poi:5.2.2'
