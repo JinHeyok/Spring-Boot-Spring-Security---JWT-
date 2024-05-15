@@ -1,6 +1,9 @@
 package com.colabear754.authentication_example_java.Util;
 
+import com.colabear754.authentication_example_java.handler.BadRequestException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -12,8 +15,11 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -227,6 +233,51 @@ public class ExcelUtil {
         log.info("==========> " + sheetName + " ExcelFile을 정상적으로 생성하였습니다.");
         return workbook;
     }
+
+    /**
+     * NOTE CSV 파일을 읽어서 XLSX 파일로 변환
+     *
+     * @param file CSV 파일
+     * @return {File} response
+     * @throws IOException
+     * @throws BadRequestException 파일 형식이 올바르지 않습니다. -> {파일위치.함수위치}
+     * @throws InvalidFormatException
+     */
+    public static File convertCsvFileTOXlsxFile(MultipartFile file){
+        File xlsxFile = null;
+        try {
+            // NOTE 파일이 존재하지 않는 경우
+            if (file.isEmpty()) {throw new BadRequestException("파일이 존재하지 않습니다.");}
+
+            // NOTE 파일의 확장자 검사 엑셀 파일만 가능
+            String contentType = file.getContentType();
+            if (!contentType.equals("text/csv")) {throw new BadRequestException("파일 형식이 올바르지 않습니다.");}
+
+            // NOTE CSV 파일을 읽어서 XLSX 파일로 변환
+            Reader in = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8);
+            Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
+
+            xlsxFile = File.createTempFile("temp", ".xlsx");
+            FileOutputStream fos = new FileOutputStream(xlsxFile);
+            Workbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("Sheet1");
+
+            int rowNumber = 0;
+            for (CSVRecord record : records) {
+                Row row = sheet.createRow(rowNumber++);
+                for (int i = 0; i < record.size(); i++) {
+                    row.createCell(i).setCellValue(record.get(i));
+                }
+            }
+            workbook.write(fos);
+            fos.close();
+            workbook.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return xlsxFile;
+    }
+
 
 
     // NOTE Map 에서 Key 값은 0,1,2,3,으로 지정 한다.

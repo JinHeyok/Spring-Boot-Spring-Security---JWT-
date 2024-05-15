@@ -41,6 +41,7 @@
 - Excel File 동적 생성 , 다운로드 구성 
     - Excel 의 첫행의 카테고리 이름은 별도 지정 및 DB의 Comment 값으로 지정 가능
 - Excel 관련 Util Class 구성
+- CSV 파일을 xlsx파일로 변환 구성 -> Mac에서 인코딩 오류로 인해 window에서 확인 필요
 ```java
     // Excel Read
 implementation 'org.apache.poi:poi:5.2.2'

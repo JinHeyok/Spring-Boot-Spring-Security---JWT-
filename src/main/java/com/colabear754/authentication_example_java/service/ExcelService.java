@@ -15,7 +15,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,13 +32,19 @@ public class ExcelService {
     public boolean importExcel(MultipartFile file) throws IOException, InvalidFormatException {
 
         // NOTE 파일이 존재하지 않는 경우
-        if (file.isEmpty()) {
-            throw new BadRequestException("파일이 존재하지 않습니다.");
-        }
+        if (file.isEmpty()) {throw new BadRequestException("파일이 존재하지 않습니다.");}
+
         // NOTE 파일의 확장자 검사 엑셀 파일만 가능
         String contentType = file.getContentType();
+        System.out.println(contentType);
         if (!contentType.equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
-            throw new BadRequestException("파일 형식이 올바르지 않습니다.");
+            if(contentType.equals("text/csv")){
+                File xlsxFile = ExcelUtil.convertCsvFileTOXlsxFile(file); // MEMO csv 파일을 xlsx파일로 변환
+                Path dest = Paths.get("my_file.xlsx"); // MEMO 파일 저장
+                Files.copy(xlsxFile.toPath(), dest);
+            } else {
+                throw new BadRequestException("파일 형식이 올바르지 않습니다.");
+            }
         }
 
         Map<String, Object> nameMap = ExcelUtil.getFirstExcelData(file , 0);
@@ -42,12 +52,12 @@ public class ExcelService {
 
         // NOTE 1행의 이름 데이터만 가져오기
         for (int i = 0; i < nameMap.size(); i++) {
-            System.out.println(nameMap.get(String.valueOf(i)));
+//            System.out.println(nameMap.get(String.valueOf(i)));
         }
 
         // NOTE 2행부터 데이터 전부 가져오기
         for (int i = 0; i < listMap.size(); i++) {
-            System.out.println(listMap.get(i));
+//            System.out.println(listMap.get(i));
             for (int j = 0; j < listMap.get(i).size(); j++) {
                 System.out.println(listMap.get(i).get(String.valueOf(j)));
             }
