@@ -44,9 +44,11 @@
 - CSV 파일을 xlsx파일로 변환 구성 -> Mac에서 인코딩 오류로 인해 window에서 확인 필요
 - CSV 파일을 읽는 메소드 구성 -> 인코딩 주의 UTF-8변환 필요
 ```java
-    // Excel Read
+// Excel Read
 implementation 'org.apache.poi:poi:5.2.2'
 implementation 'org.apache.poi:poi-ooxml:5.2.2'
+// Excel csv
+implementation 'org.apache.commons:commons-csv:1.9.0'
 ```
 ### Branch dev-Zoom
 - Zoom 미팅 생성 API 구현
