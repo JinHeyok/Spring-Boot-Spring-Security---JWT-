@@ -278,6 +278,30 @@ public class ExcelUtil {
         return xlsxFile;
     }
 
+    /**
+     * NOTE CSV 파일의 데이터를 모두 가져온다
+     *
+     * @param file CSV 파일
+     * @return {Map}
+     * @throws IOException
+     */
+    public static List<Map<String, String>> getCsvData(MultipartFile file) throws IOException {
+        List<Map<String, String>> list = new ArrayList<>();
+
+        try (Reader in = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)) {
+            Iterable<CSVRecord> records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
+
+            for (CSVRecord record : records) {
+                Map<String, String> map = new HashMap<>();
+                for (int i = 0; i < record.size(); i++) {
+                    map.put(String.valueOf(i), record.get(i));
+                }
+                list.add(map);
+            }
+        }
+        return list;
+    }
+
 
 
     // NOTE Map 에서 Key 값은 0,1,2,3,으로 지정 한다.
