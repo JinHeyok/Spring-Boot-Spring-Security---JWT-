@@ -9,6 +9,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -190,7 +191,7 @@ public class ExcelUtil {
     public static Workbook excelCreateDownload(List<String> commentList,
                                                Map<Integer, List<String>> dataMap,
                                                String sheetName) {
-        Workbook workbook = new HSSFWorkbook(); // MEMO Excel 파일을 생성한다.
+        Workbook workbook = new SXSSFWorkbook(); // MEMO Excel 파일을 생성한다.
 
         Sheet sheet = workbook.createSheet(sheetName); // MEMO 엑셀 시트를 생성
 
