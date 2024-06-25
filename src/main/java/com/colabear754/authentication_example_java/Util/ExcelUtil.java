@@ -1,5 +1,6 @@
 package com.colabear754.authentication_example_java.Util;
 
+import com.colabear754.authentication_example_java.entity.ExcelSheetData;
 import com.colabear754.authentication_example_java.handler.BadRequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -235,6 +236,57 @@ public class ExcelUtil {
         return workbook;
     }
 
+    public static Workbook excelCreateDownloadAll(Map<String, ExcelSheetData> sheetsDataMap) {
+        Workbook workbook = new HSSFWorkbook();
+
+        for (String sheetName : sheetsDataMap.keySet()) {
+            ExcelSheetData sheetData = sheetsDataMap.get(sheetName);
+            List<String> commentList = sheetData.getCommentList();
+            Map<Integer, List<String>> dataMap = sheetData.getDataMap();
+
+            Sheet sheet = workbook.createSheet(sheetName);
+
+            // MEMO 공통 스타일을 위한 CellStyle 객체 생성
+            CellStyle style = workbook.createCellStyle();
+            style.setBorderBottom(BorderStyle.THIN);                    // MEMO 아래쪽 테두리
+            style.setBottomBorderColor(IndexedColors.BLACK.getIndex()); // MEMO 아래쪽 테두리 색상
+            style.setBorderLeft(BorderStyle.THIN);                     // MEMO 왼쪽 테두리
+            style.setLeftBorderColor(IndexedColors.BLACK.getIndex()); // MEMO 왼쪽 테두리 색상
+            style.setBorderRight(BorderStyle.THIN);                     // MEMO 오른쪽 테두리
+            style.setRightBorderColor(IndexedColors.BLACK.getIndex()); // MEMO 오른쪽 테두리 색상
+            style.setBorderTop(BorderStyle.THIN);                     // MEMO 위쪽 테두리
+            style.setTopBorderColor(IndexedColors.BLACK.getIndex()); // MEMO 위쪽 테두리 색상
+
+            // MEMO 배경색 설정
+            style.setFillForegroundColor(IndexedColors.YELLOW.getIndex()); // MEMO 배경색으로 노란색 선택
+            style.setFillPattern(FillPatternType.SOLID_FOREGROUND); // MEMO 채우기 패턴으로 단색 채우기 선택
+
+            Row headerRow = sheet.createRow(0); // MEMO 2행을 선택 (0행은 일반적으로 헤더로 사용됨)
+            for (int i = 0; i < commentList.size(); i++) { // MEMO 코멘트 이름으로 2행의 카테고리 이름을 넣는다.
+                Cell cell = headerRow.createCell(i); // MEMO 새 셀 생성 및 헤더 텍스트 설정
+                cell.setCellValue(commentList.get(i)); // MEMO commentList에서 가져온 값으로 셀 값 설정
+                cell.setCellStyle(style); // MEMO 앞서 생성한 스타일 적용
+                sheet.setColumnWidth(i, 3500); // MEMO 너비를 3500으로 설정
+            }
+
+            // MEMO 필터 설정 (코멘트값의 수에 따라 입력)
+            CellRangeAddress range = new CellRangeAddress(0, 0, 0, commentList.size() - 1);
+            sheet.setAutoFilter(range);
+
+            Set<Integer> keys = dataMap.keySet();
+            int rowNo = 1;
+            for (int i = 0; i < dataMap.get(0).size(); i++) {
+                Row row = sheet.createRow(rowNo++);
+                for (Integer key : keys) {
+                    row.createCell(key).setCellValue(dataMap.get(key).get(i));
+                }
+            }
+            log.info("============> " + sheetName + " ExcelFile을 정상적으로 생성하였습니다.");
+        }
+
+        return workbook;
+    }
+
     /**
      * NOTE CSV 파일을 읽어서 XLSX 파일로 변환
      *
@@ -338,4 +390,42 @@ public class ExcelUtil {
 //        return fieldValuesMap;
 //    }
 
+
+//    public static Map<Integer, List<String>> convertEntityListTOMapFilter(List<? extends BaseEntity> baseEntityList, Set<String> excludedFields) throws IllegalAccessException {
+//        // MEMO 필드 값들을 저장할 맵 초기화, 키는 필드 순서, 값은 리스트(필드 값)
+//        Map<Integer, List<String>> fieldValuesMap = new TreeMap<>();
+//
+//        // MEMO BaseEntity 리스트를 순회
+//        for (BaseEntity entity : baseEntityList) {
+//            // MEMO 현재 엔티티의 모든 필드 가져오기
+//            Field[] fields = entity.getClass().getDeclaredFields();
+//            // MEMO 각 엔티티마다 필드 인덱스를 0부터 시작
+//            int fieldIndex = 0;
+//            // MEMO 모든 필드에 대해 반복
+//            for (Field field : fields) {
+//                // MEMO 제외 필드 목록에 현재 필드 이름이 포함되어 있다면 처리하지 않고 넘어감
+//                if (excludedFields.contains(field.getName())) {continue;}
+//                // MEMO 비공개 필드에도 접근 가능하게 설정
+//                field.setAccessible(true);
+//                try {
+//                    // MEMO 필드의 값을 가져옴
+//                    Object value = field.get(entity);
+//                    // MEMO 값이 null이면 ""(빈값) 문자열 사용, 아니면 toString 호출
+//                    String valueStr = value == null || value.equals("null") ? "" : value.toString();
+//                    // MEMO 맵의 키로 사용될 필드 인덱스
+//                    int key = fieldIndex;
+//
+//                    // MEMO 맵에 키가 없으면 새 리스트를 만들고 값 추가, 있으면 기존 리스트에 값 추가
+//                    fieldValuesMap.computeIfAbsent(key, k -> new ArrayList<>()).add(valueStr);
+//                } catch (IllegalAccessException e) {
+//                    e.printStackTrace(); // MEMO 접근 권한 예외 처리
+//                    throw new IllegalAccessException(e.getMessage());
+//                }
+//                // MEMO 다음 필드를 위해 인덱스 증가
+//                fieldIndex++;
+//            }
+//        }
+//        // MEMO 생성된 맵 반환
+//        return fieldValuesMap;
+//    }
 }
