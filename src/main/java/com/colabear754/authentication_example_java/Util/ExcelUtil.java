@@ -22,7 +22,12 @@ import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Slf4j
@@ -375,6 +380,17 @@ public class ExcelUtil {
 //                field.setAccessible(true); // MEMO 비공개 필드에도 접근 가능하게 설정
 //                try {
 //                    Object value = field.get(entity); // MEMO 필드의 값을 가져옴
+//                    String valueStr = "";
+//                    if (value == null || value.equals("null")) {valueStr = "";} // MEMO 값이 null이면 ""(빈값) 문자열 사용
+//                    if (value instanceof  String) {valueStr = (String) value;} // MEMO 값이 문자열이면 그대로 사용
+//                    if (value instanceof Integer) {valueStr = Integer.toString((Integer) value);} // MEMO 값이 정수형이면 문자열로 변환
+//                    if (value instanceof Double) {valueStr = Double.toString((Double) value);} // MEMO 값이 실수형이면 문자열로 변환
+//                    if (value instanceof Float) {valueStr = Float.toString((Float) value);} // MEMO 값이 실수형이면 문자열로 변환
+//                    if (value instanceof Long) {valueStr = Long.toString((Long) value);} // MEMO 값이 정수형이면 문자열로 변환
+//                    if (value instanceof Boolean) {valueStr = Boolean.toString((Boolean) value);} // MEMO 값이 불리언이면 문자열로 변환
+//                    if (value instanceof Date || value instanceof LocalDateTime || value instanceof LocalDate) { // MEMO  값이 날짜형이면 문자열로 변환
+//                        valueStr = com.ninefive.national.utils.DateUtil.convertDateToString(value);
+//                    }
 //                    String valueStr = value == null || value.equals("null") ? "" : value.toString(); // MEMO 값이 null이면 ""(빈값) 문자열 사용, 아니면 toString 호출
 //                    int key = fieldIndex; // MEMO 맵의 키로 사용될 문자열 생성 (필드 인덱스)
 //
@@ -410,6 +426,17 @@ public class ExcelUtil {
 //                try {
 //                    // MEMO 필드의 값을 가져옴
 //                    Object value = field.get(entity);
+//                    String valueStr = "";
+//                    if (value == null || value.equals("null")) {valueStr = "";} // MEMO 값이 null이면 ""(빈값) 문자열 사용
+//                    if (value instanceof  String) {valueStr = (String) value;} // MEMO 값이 문자열이면 그대로 사용
+//                    if (value instanceof Integer) {valueStr = Integer.toString((Integer) value);} // MEMO 값이 정수형이면 문자열로 변환
+//                    if (value instanceof Double) {valueStr = Double.toString((Double) value);} // MEMO 값이 실수형이면 문자열로 변환
+//                    if (value instanceof Float) {valueStr = Float.toString((Float) value);} // MEMO 값이 실수형이면 문자열로 변환
+//                    if (value instanceof Long) {valueStr = Long.toString((Long) value);} // MEMO 값이 정수형이면 문자열로 변환
+//                    if (value instanceof Boolean) {valueStr = Boolean.toString((Boolean) value);} // MEMO 값이 불리언이면 문자열로 변환
+//                    if (value instanceof Date || value instanceof LocalDateTime || value instanceof LocalDate) { // MEMO  값이 날짜형이면 문자열로 변환
+//                        valueStr = com.ninefive.national.utils.DateUtil.convertDateToString(value);
+//                    }
 //                    // MEMO 값이 null이면 ""(빈값) 문자열 사용, 아니면 toString 호출
 //                    String valueStr = value == null || value.equals("null") ? "" : value.toString();
 //                    // MEMO 맵의 키로 사용될 필드 인덱스
@@ -428,4 +455,21 @@ public class ExcelUtil {
 //        // MEMO 생성된 맵 반환
 //        return fieldValuesMap;
 //    }
+
+    public static String convertDateToString(Object date){
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateStr = "";
+        if (date instanceof Date) {
+            dateStr = df.format((Date) date);
+        }
+        if (date instanceof LocalDateTime) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            dateStr = ((LocalDateTime) date).format(formatter);
+        }
+        if (date instanceof LocalDate) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            dateStr = ((LocalDate) date).format(formatter);
+        }
+        return dateStr;
+    }
 }
