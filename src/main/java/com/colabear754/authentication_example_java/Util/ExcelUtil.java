@@ -381,7 +381,11 @@ public class ExcelUtil {
 //                try {
 //                    Object value = field.get(entity); // MEMO 필드의 값을 가져옴
 //                    String valueStr = "";
-//                    if (value == null || value.equals("null")) {valueStr = "";} // MEMO 값이 null이면 ""(빈값) 문자열 사용
+//                    if (value == null || value.equals("null")) {
+//                        valueStr = ""; // MEMO 값이 null이면 ""(빈값) 문자열 사용
+//                    } else {
+//                        valueStr = value.toString(); // MEMO 아니면 toString 호출
+//                    }
 //                    if (value instanceof  String) {valueStr = (String) value;} // MEMO 값이 문자열이면 그대로 사용
 //                    if (value instanceof Integer) {valueStr = Integer.toString((Integer) value);} // MEMO 값이 정수형이면 문자열로 변환
 //                    if (value instanceof Double) {valueStr = Double.toString((Double) value);} // MEMO 값이 실수형이면 문자열로 변환
@@ -427,7 +431,12 @@ public class ExcelUtil {
 //                    // MEMO 필드의 값을 가져옴
 //                    Object value = field.get(entity);
 //                    String valueStr = "";
-//                    if (value == null || value.equals("null")) {valueStr = "";} // MEMO 값이 null이면 ""(빈값) 문자열 사용
+
+//                    if (value == null || value.equals("null")) {
+//                        valueStr = ""; // MEMO 값이 null이면 ""(빈값) 문자열 사용
+//                    } else {
+//                        valueStr = value.toString(); // MEMO 아니면 toString 호출
+//                    }
 //                    if (value instanceof  String) {valueStr = (String) value;} // MEMO 값이 문자열이면 그대로 사용
 //                    if (value instanceof Integer) {valueStr = Integer.toString((Integer) value);} // MEMO 값이 정수형이면 문자열로 변환
 //                    if (value instanceof Double) {valueStr = Double.toString((Double) value);} // MEMO 값이 실수형이면 문자열로 변환
