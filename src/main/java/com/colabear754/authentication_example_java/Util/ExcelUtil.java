@@ -234,7 +234,11 @@ public class ExcelUtil {
             Row row = sheet.createRow(rowNo++); // MEMO 하나의 데이터들을 순회할 때 마다 열을 바꿔준다.
             for (Integer key : keys) { // MEMO 해당 Key를 다 가져온다.
                 // MEMO Key값에 있는 데이터 리스트를 전부 셀에 입력해준다.
-                row.createCell(key).setCellValue(dataMap.get(key).get(i));
+//                row.createCell(key).setCellValue(dataMap.get(key).get(i));
+                // MEMO 데이터가 없을 경우 빈값으로 셀을 생성한다.
+                if (dataMap.get(key) != null && !dataMap.get(key).isEmpty() && i < dataMap.get(key).size()) {
+                    row.createCell(key).setCellValue(dataMap.get(key).get(i));
+                }
             }
         }
         log.info("==========> " + sheetName + " ExcelFile을 정상적으로 생성하였습니다.");
@@ -283,7 +287,11 @@ public class ExcelUtil {
             for (int i = 0; i < dataMap.get(0).size(); i++) {
                 Row row = sheet.createRow(rowNo++);
                 for (Integer key : keys) {
-                    row.createCell(key).setCellValue(dataMap.get(key).get(i));
+//                    row.createCell(key).setCellValue(dataMap.get(key).get(i));
+                    // MEMO 데이터가 없을 경우 빈값으로 셀을 생성한다.
+                    if (dataMap.get(key) != null && !dataMap.get(key).isEmpty() && i < dataMap.get(key).size()) {
+                        row.createCell(key).setCellValue(dataMap.get(key).get(i));
+                    }
                 }
             }
             log.info("============> " + sheetName + " ExcelFile을 정상적으로 생성하였습니다.");

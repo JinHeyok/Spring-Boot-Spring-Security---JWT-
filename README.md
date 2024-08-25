@@ -44,6 +44,7 @@
 - CSV 파일을 xlsx파일로 변환 구성 -> Mac에서 인코딩 오류로 인해 window에서 확인 필요
 - CSV 파일을 읽는 메소드 구성 -> 인코딩 주의 UTF-8변환 필요
 - Excel 데이터 다운로드 시 커스텀을 위해 가공 처리를 위해 타입별로 분리 처리
+- Excel 다운로드 시 데이터가 없을 경우 빈 문자열을 삽입하도록 수정
 ```java
 // Excel Read
 implementation 'org.apache.poi:poi:5.2.2'
