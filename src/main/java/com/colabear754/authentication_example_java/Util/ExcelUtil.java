@@ -283,7 +283,9 @@ public class ExcelUtil {
             for (int i = 0; i < dataMap.get(0).size(); i++) {
                 Row row = sheet.createRow(rowNo++);
                 for (Integer key : keys) {
+//                    if (dataMap.containsKey(key) && !dataMap.get(key).isEmpty()) {
                     row.createCell(key).setCellValue(dataMap.get(key).get(i));
+//                    }
                 }
             }
             log.info("============> " + sheetName + " ExcelFile을 정상적으로 생성하였습니다.");
@@ -298,18 +300,22 @@ public class ExcelUtil {
      * @param file CSV 파일
      * @return {File} response
      * @throws IOException
-     * @throws BadRequestException 파일 형식이 올바르지 않습니다. -> {파일위치.함수위치}
+     * @throws BadRequestException    파일 형식이 올바르지 않습니다. -> {파일위치.함수위치}
      * @throws InvalidFormatException
      */
-    public static File convertCsvFileTOXlsxFile(MultipartFile file){
+    public static File convertCsvFileTOXlsxFile(MultipartFile file) {
         File xlsxFile = null;
         try {
             // NOTE 파일이 존재하지 않는 경우
-            if (file.isEmpty()) {throw new BadRequestException("파일이 존재하지 않습니다.");}
+            if (file.isEmpty()) {
+                throw new BadRequestException("파일이 존재하지 않습니다.");
+            }
 
             // NOTE 파일의 확장자 검사 엑셀 파일만 가능
             String contentType = file.getContentType();
-            if (!contentType.equals("text/csv")) {throw new BadRequestException("파일 형식이 올바르지 않습니다.");}
+            if (!contentType.equals("text/csv")) {
+                throw new BadRequestException("파일 형식이 올바르지 않습니다.");
+            }
 
             // NOTE CSV 파일을 읽어서 XLSX 파일로 변환
             Reader in = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8);
@@ -359,7 +365,6 @@ public class ExcelUtil {
         }
         return list;
     }
-
 
 
     // NOTE Map 에서 Key 값은 0,1,2,3,으로 지정 한다.
@@ -465,7 +470,7 @@ public class ExcelUtil {
 //        return fieldValuesMap;
 //    }
 
-    public static String convertDateToString(Object date){
+    public static String convertDateToString(Object date) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateStr = "";
         if (date instanceof Date) {
