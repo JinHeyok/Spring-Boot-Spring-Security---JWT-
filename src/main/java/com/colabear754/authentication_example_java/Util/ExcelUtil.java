@@ -37,12 +37,16 @@ public class ExcelUtil {
      *
      * @param file        Excel 파일
      * @param sheetNumber 시트 넘버 0 이 첫번쨰
+     * @param startIndex  열 데이터 존재 유무 시작 인덱스
+     *                    데이터 값이 있는 것만 가져온다.
      * @return {List} response
      * @throws InvalidFormatException
      * @throws IOException            Excel 파일을 처리하는 과정에서 에러가 발생했습니다. -> {파일위치.함수위치}
      * @author 방진혁
      */
-    public static List<Map<String, Object>> getListExcelData(MultipartFile file, int sheetNumber) throws InvalidFormatException, IOException {
+    public static List<Map<String, Object>> getListExcelData(MultipartFile file,
+                                                             int sheetNumber,
+                                                             int startIndex) throws InvalidFormatException, IOException {
 
         List<Map<String, Object>> excelList = new ArrayList<>();
 
@@ -63,7 +67,7 @@ public class ExcelUtil {
                 XSSFRow row = sheet.getRow(rowIndex);
 
                 // NOTE 빈 행은 Skip
-                if (row != null && row.getCell(0) != null && !row.getCell(0).toString().isBlank()) {
+                if (row != null && row.getCell(startIndex) != null && !row.getCell(startIndex).toString().isBlank()) {
 
                     Map<String, Object> map = new HashMap<>();
 

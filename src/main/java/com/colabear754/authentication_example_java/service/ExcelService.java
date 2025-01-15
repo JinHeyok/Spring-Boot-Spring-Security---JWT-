@@ -48,7 +48,7 @@ public class ExcelService {
         }
 
         Map<String, Object> nameMap = ExcelUtil.getFirstExcelData(file , 0);
-        List<Map<String, Object>> listMap = ExcelUtil.getListExcelData(file , 0);
+        List<Map<String, Object>> listMap = ExcelUtil.getListExcelData(file , 0 , 0);
 
         // NOTE 1행의 이름 데이터만 가져오기
         for (int i = 0; i < nameMap.size(); i++) {
