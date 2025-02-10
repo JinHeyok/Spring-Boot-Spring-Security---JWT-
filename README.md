@@ -45,6 +45,7 @@
 - CSV 파일을 읽는 메소드 구성 -> 인코딩 주의 UTF-8변환 필요
 - Excel 데이터 다운로드 시 커스텀을 위해 가공 처리를 위해 타입별로 분리 처리
 - Excel 다운로드 시 데이터가 없을 경우 빈 문자열을 삽입하도록 수정
+- Excel 다운로드 시 암호화 로직 추가
 ```java
 // Excel Read
 implementation 'org.apache.poi:poi:5.2.2'

@@ -2,12 +2,17 @@ package com.colabear754.authentication_example_java.Util;
 
 import com.colabear754.authentication_example_java.entity.ExcelSheetData;
 import com.colabear754.authentication_example_java.handler.BadRequestException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.poifs.crypt.EncryptionInfo;
+import org.apache.poi.poifs.crypt.EncryptionMode;
+import org.apache.poi.poifs.crypt.Encryptor;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -19,9 +24,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -247,6 +254,90 @@ public class ExcelUtil {
         }
         log.info("==========> " + sheetName + " ExcelFile을 정상적으로 생성하였습니다.");
         return workbook;
+    }
+
+    /**
+     * 암호화 된 엑셀파일을 만들어 다운로드한다.
+     *
+     * @param commentList 1행의 카테고리명이 될 DB의 코멘트이름
+     * @param dataMap     입력할 데이터 Map
+     * @param sheetName   시트이름
+     * @param password    암호화할 비밀번호
+     * @return Workbook
+     * @author NINEFIVE
+     */
+    public byte[] excelCreatePasswordDownload(List<String> commentList,
+                                              Map<Integer, List<String>> dataMap,
+                                              String sheetName,
+                                              String password) throws IOException, GeneralSecurityException {
+        Workbook workbook = new SXSSFWorkbook(); // MEMO Excel 파일을 생성한다.
+
+        Sheet sheet = workbook.createSheet(sheetName); // MEMO 엑셀 시트를 생성
+
+        // MEMO 공통 스타일을 위한 CellStyle 객체 생성
+        CellStyle style = workbook.createCellStyle();
+        style.setBorderBottom(BorderStyle.THIN);                    // MEMO 아래쪽 테두리
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex()); // MEMO 아래쪽 테두리 색상
+        style.setBorderLeft(BorderStyle.THIN);                     // MEMO 왼쪽 테두리
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex()); // MEMO 왼쪽 테두리 색상
+        style.setBorderRight(BorderStyle.THIN);                     // MEMO 오른쪽 테두리
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex()); // MEMO 오른쪽 테두리 색상
+        style.setBorderTop(BorderStyle.THIN);                     // MEMO 위쪽 테두리
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex()); // MEMO 위쪽 테두리 색상
+
+        // MEMO 배경색 설정
+        style.setFillForegroundColor(IndexedColors.YELLOW.getIndex()); // MEMO 배경색으로 노란색 선택
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND); // MEMO 채우기 패턴으로 단색 채우기 선택
+
+        Row headerRow = sheet.createRow(0); // MEMO 2행을 선택 (0행은 일반적으로 헤더로 사용됨)
+        for (int i = 0; i < commentList.size(); i++) { // MEMO 코멘트 이름으로 2행의 카테고리 이름을 넣는다.
+            Cell cell = headerRow.createCell(i); // MEMO 새 셀 생성 및 헤더 텍스트 설정
+            cell.setCellValue(commentList.get(i)); // MEMO commentList에서 가져온 값으로 셀 값 설정
+            cell.setCellStyle(style); // MEMO 앞서 생성한 스타일 적용
+            sheet.setColumnWidth(i, 5000); // MEMO 너비를 3500으로 설정
+        }
+
+        if (!commentList.isEmpty()) {
+            CellRangeAddress range = new CellRangeAddress(0, 0, 0, commentList.size() - 1);
+            sheet.setAutoFilter(range);
+        } else {
+            // Handle the case when commentList is empty
+            // For example, you can skip setting the auto filter or set a default range
+            log.warn("commentList is empty, skipping auto filter setting.");
+        }
+
+        Set<Integer> keys = dataMap.keySet(); // MEMO 키의 값들을 추출한다.
+        int rowNo = 1; // MEMO 데이터를 열을 지정
+        for (int i = 0; i < dataMap.get(0).size(); i++) { // MEMO g데이터의 수는 동일 하므로 인덱스 값으로 순회한다.
+            Row row = sheet.createRow(rowNo++); // MEMO 하나의 데이터들을 순회할 때 마다 열을 바꿔준다.
+            for (Integer key : keys) { // MEMO 해당 Key를 다 가져온다.
+                // MEMO Key값에 있는 데이터 리스트를 전부 셀에 입력해준다.
+//                if (dataMap.containsKey(key) && !dataMap.get(key).isEmpty()) {
+                row.createCell(key).setCellValue(dataMap.get(key).get(i));
+//                }
+            }
+        }
+        log.info("==========> " + sheetName + " ExcelFile을 정상적으로 생성하였습니다.");
+
+        // NOTE  암호화된 Excel 파일을 저장할 ByteArrayOutputStream 생성
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        // NOTE 암호화 설정
+        POIFSFileSystem fs = new POIFSFileSystem(); // NOTE POI 파일 시스템 객체 생성
+        EncryptionInfo info = new EncryptionInfo(EncryptionMode.agile); // NOTE 암호화 정보 객체 생성 (agile 모드 사용)
+        Encryptor enc = info.getEncryptor(); // NOTE 암호화기 객체 생성
+        enc.confirmPassword(password); // NOTE 암호화기 객체에 비밀번호 설정
+
+        try (OutputStream os = enc.getDataStream(fs)) { // NOTE 암호화된 데이터 스트림을 얻어옴
+            workbook.write(os); // NOTE 워크북 데이터를 암호화된 스트림에 씀
+        }
+        workbook.close(); // NOTE 워크북 닫기
+
+        fs.writeFilesystem(bos); // NOTE 암호화된 파일 시스템을 ByteArrayOutputStream에 씀
+        bos.close(); // NOTE ByteArrayOutputStream 닫기
+        byte[] excelBytes = bos.toByteArray(); // NOTE ByteArrayOutputStream의 데이터를 바이트 배열로 변환
+
+        return excelBytes; // NOTE 바이트 배열 반환
     }
 
     public static Workbook excelCreateDownloadAll(Map<String, ExcelSheetData> sheetsDataMap) {
@@ -498,4 +589,59 @@ public class ExcelUtil {
         }
         return dateStr;
     }
+
+    /**
+     * 파일의 이름의 시간이 필요할 경우 년,월,일 시,분,초 까지 시간 문구를 생성
+     *
+     * @return String
+     * @author NINEFIVE
+     */
+    public static String getCurrentDateFileName(){
+        LocalDateTime currentTime = LocalDateTime.now();
+        return currentTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss"));
+    }
+
+    /**
+     * 엑셀 다운로드
+     *
+     * @param workbook 다운로드 할 엑셀 파일
+     * @param response HttpServletResponse
+     * @param fileName 파일 이름
+     * @throws IOException 엑셀 파일 다운로드 중 에러 발생 -> {파일위치.함수위치}
+     * @author 방진혁
+     */
+    public void excelDownload(Workbook workbook,
+                              HttpServletResponse response,
+                              String fileName) throws IOException {
+        response.addHeader("Access-Control-Expose-Headers", "Content-Disposition");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        String encodedFileName = URLEncoder.encode(getCurrentDateFileName() + "_" + fileName + ".xlsx", StandardCharsets.UTF_8);
+        response.setHeader("Content-Disposition", "attachment;filename*=UTF-8''" + encodedFileName); // MEMO 파일 이름
+        workbook.write(response.getOutputStream()); // MEMO 다운로드
+        workbook.close(); // MEMO 메모리 방지를 위해 Excel 파일을 닫아준다.
+    }
+
+    /**
+     * 비밀번호 엑셀 다운로드
+     *
+     * @param excelBytes 엑셀 파일 바이트 배열
+     * @param response   HttpServletResponse
+     * @param fileName   파일 이름
+     * @throws IOException 엑셀 파일 다운로드 중 에러 발생 -> {파일위치.함수위치}
+     * @author 방진혁
+     */
+    public void passwordExcelDownload(byte[] excelBytes,
+                                      HttpServletResponse response,
+                                      String fileName) throws IOException {
+        response.addHeader("Access-Control-Expose-Headers", "Content-Disposition");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setContentLength(excelBytes.length);
+        String encodedFileName = URLEncoder.encode(getCurrentDateFileName() + "_" + fileName + ".xlsx", StandardCharsets.UTF_8);
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + encodedFileName);
+        try (OutputStream os = response.getOutputStream()) {
+            os.write(excelBytes);
+            os.flush();
+        }
+    }
+
 }
